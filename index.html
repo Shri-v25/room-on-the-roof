@@ -4,7 +4,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Room on the Roof: Focus Sanctuary</title>
-    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Lora', serif; 
+            background-color: #1a1a1a; overflow: hidden;
+        }
+
+        .hidden { display: none !important; }
+
+        #atmosphere-filter {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 10;
+            transition: background-color 2s ease; mix-blend-mode: multiply;
+        }
+
+        .game-container {
+            position: relative; width: 100vw; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .scrolling-path {
+            position: absolute; width: 100%; height: 200%;
+            background: repeating-linear-gradient(180deg, #3a4d1a, #4a5d23 50%, #3a4d1a 100%);
+            background-size: 100% 200px;
+            animation: walkPath 8s linear infinite paused;
+        }
+
+        @keyframes walkPath {
+            from { background-position: 0 0; }
+            to { background-position: 0 200px; }
+        }
+
+        .rusty-character {
+            width: 40px; height: 70px; background-color: #2b2b2b;
+            border: 2px solid #111; border-radius: 20px;
+            position: absolute; z-index: 5;
+            box-shadow: 10px 10px 15px rgba(0,0,0,0.5);
+        }
+
+        .ui-panel {
+            position: absolute; bottom: 40px;
+            background: rgba(250, 245, 235, 0.95);
+            padding: 25px 40px; border-radius: 12px;
+            z-index: 20; text-align: center; max-width: 600px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            border: 1px solid #d4af37;
+        }
+
+        #task-input {
+            width: 80%; padding: 10px; margin-bottom: 15px;
+            border: 1px solid #8b5a2b; border-radius: 5px; font-family: 'Lora', serif;
+        }
+
+        button {
+            background-color: #8b5a2b; color: white; border: none;
+            padding: 12px 24px; border-radius: 5px; cursor: pointer;
+            font-family: 'Lora', serif; font-size: 16px; transition: 0.3s;
+        }
+
+        button:hover { background-color: #a06b35; transform: translateY(-2px); }
+
+        #night-sanctuary {
+            position: absolute; width: 100%; height: 100%;
+            background-color: #1a1410; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 30;
+        }
+
+        .sanctuary-title { color: #d4af37; font-style: italic; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
+
+        .record-player {
+            position: relative; width: 280px; height: 280px;
+            background: #2a231d; border-radius: 10px;
+            box-shadow: inset 0 0 20px #000, 0 10px 30px rgba(0,0,0,0.8);
+            margin-bottom: 30px; cursor: pointer;
+        }
+
+        .record {
+            width: 240px; height: 240px; background: #111;
+            border-radius: 50%; position: absolute; top: 20px; left: 20px;
+            box-shadow: inset 0 0 0 5px #1a1a1a, inset 0 0 0 10px #111, inset 0 0 0 15px #1a1a1a;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .spinning { animation: spinRecord 4s linear infinite; }
+        @keyframes spinRecord { 100% { transform: rotate(360deg); } }
+
+        .record-label {
+            width: 70px; height: 70px; background: #d4af37;
+            border-radius: 50%; text-align: center; line-height: 70px;
+            font-size: 10px; font-weight: bold; color: #333;
+        }
+
+        #story-event {
+            background: rgba(42, 35, 29, 0.9); padding: 20px; border-radius: 8px;
+            color: #e0d0c1; max-width: 500px; text-align: center;
+            border: 1px solid #5c4b39;
+        }
+
+        .choice-buttons button {
+            display: block; width: 100%; margin: 10px 0;
+            background: #3e3226; border: 1px solid #5c4b39;
+            color: #e0d0c1; text-align: left;
+        }
+
+        .choice-buttons button:hover { background: #5c4b39; transform: translateX(5px); }
+    </style>
 </head>
 <body>
     <div id="atmosphere-filter"></div>
@@ -46,6 +156,103 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // --- ATMOSPHERE & LIGHTING ---
+        function updateAtmosphere() {
+            const hour = new Date().getHours();
+            const filter = document.getElementById('atmosphere-filter');
+            
+            if (hour >= 5 && hour < 8) filter.style.backgroundColor = "rgba(173, 216, 230, 0.2)"; // Dawn
+            else if (hour >= 8 && hour < 16) filter.style.backgroundColor = "rgba(255, 250, 205, 0.1)"; // Day
+            else if (hour >= 16 && hour < 19) filter.style.backgroundColor = "rgba(255, 140, 0, 0.3)"; // Dusk
+            else filter.style.backgroundColor = "rgba(0, 0, 30, 0.7)"; // Night
+        }
+        updateAtmosphere(); setInterval(updateAtmosphere, 60000);
+
+        // --- AUDIO ENGINE ---
+        const natureAudio = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_24564c7003.mp3'); 
+        natureAudio.loop = true;
+        natureAudio.volume = 0.4;
+
+        const vinylMusic = new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3'); 
+        vinylMusic.loop = true;
+        vinylMusic.volume = 0.6;
+
+        // --- DAYTIME TIMER LOGIC ---
+        const startBtn = document.getElementById('start-walk');
+        const path = document.getElementById('forest-path');
+        const storyText = document.getElementById('story-text');
+        const inputField = document.getElementById('task-input');
+        const brosStory = document.getElementById('bros-story');
+        const brosText = document.getElementById('bros-text');
+
+        startBtn.addEventListener('click', () => {
+            const task = inputField.value;
+            if(!task) return;
+
+            path.style.animationPlayState = 'running';
+            inputField.style.display = 'none';
+            startBtn.style.display = 'none';
+            storyText.innerText = `Focusing on: "${task}". Rusty is walking the path...`;
+            
+            natureAudio.play();
+
+            // 10-second timer for testing
+            setTimeout(() => {
+                path.style.animationPlayState = 'paused';
+                storyText.innerText = "You made it to the bazaar.";
+                brosStory.classList.remove('hidden');
+                
+                if (Math.random() > 0.5) {
+                    brosText.innerHTML = "<b>Somi</b> is waiting. He hands you a warm, paper-wrapped samosa. He doesn't ask why you look tired. Suddenly, the frantic buzzing in the world goes quiet.";
+                } else {
+                    brosText.innerHTML = "<b>Kishen</b> grabs your arm, laughing. The bazaar is a tangle of yellow lights and sweet jalebis. With him pulling you along, you finally feel awake.";
+                }
+            }, 10000); 
+        });
+
+        // --- TRANSITION TO NIGHT ---
+        document.getElementById('go-to-night').addEventListener('click', () => {
+            document.getElementById('day-container').classList.add('hidden');
+            document.getElementById('night-sanctuary').classList.remove('hidden');
+            natureAudio.pause(); 
+        });
+
+        // --- NIGHTTIME VINYL STORE LOGIC ---
+        const vinylDisc = document.getElementById('vinyl-disc');
+        const storyEvent = document.getElementById('story-event');
+        const eventText = document.getElementById('event-text');
+        const choiceButtons = document.querySelector('.choice-buttons');
+        const resetBtn = document.getElementById('reset-day');
+
+        vinylDisc.addEventListener('click', () => {
+            if (vinylDisc.classList.contains('spinning')) return; 
+
+            vinylDisc.classList.add('spinning');
+            
+            vinylMusic.play();
+            natureAudio.play(); 
+            natureAudio.volume = 0.2; 
+
+            setTimeout(() => {
+                storyEvent.classList.remove('hidden');
+            }, 5000);
+        });
+
+        function makeChoice(choice) {
+            choiceButtons.classList.add('hidden'); 
+            resetBtn.classList.remove('hidden'); 
+            
+            if(choice === 'listen') {
+                eventText.innerHTML = "Meena sits down, pulling her knees to her chest. The soft notes fill the dusty room. You don't say a word, and for the first time today, she doesn't have to pretend to be strong. The shared silence is enough.";
+            } else if (choice === 'tea') {
+                eventText.innerHTML = "You slide the warm glass toward her. She wraps her cold hands around it. She takes a sip, closes her eyes, and a tiny, almost invisible smile touches her lips. 'Thank you, Rusty,' she whispers.";
+            }
+        }
+
+        function resetToDawn() {
+            location.reload(); 
+        }
+    </script>
 </body>
 </html>
