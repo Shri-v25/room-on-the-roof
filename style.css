@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Lora', serif; /* A very bookish, Ruskin Bond font */
+    background-color: #1a1a1a;
+    overflow: hidden;
+}
+
+.game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* The Magic Lighting Filter */
+#atmosphere-filter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+    transition: background-color 2s ease; /* Smooth fade when time changes */
+    mix-blend-mode: multiply;
+}
+
+/* The Scrolling Background (Top-Down Forest) */
+.scrolling-path {
+    position: absolute;
+    width: 100%;
+    height: 200%;
+    /* Replace this URL with your actual reference image of the glowing path! */
+    background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); 
+    background-color: #4a5d23; /* Deep forest green */
+    animation: walkPath 15s linear infinite paused; /* Paused until task starts */
+}
+
+@keyframes walkPath {
+    from { background-position: 0 0; }
+    to { background-position: 0 100%; }
+}
+
+/* Rusty (Center of the screen) */
+.rusty-character {
+    width: 50px;
+    height: 80px;
+    background-color: #333; /* Placeholder for Rusty's sprite */
+    border-radius: 20px;
+    position: absolute;
+    z-index: 5;
+    box-shadow: 10px 10px 15px rgba(0,0,0,0.5); /* Gives that top-down depth */
+}
+
+/* The UI Panel */
+.ui-panel {
+    position: absolute;
+    bottom: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px 40px;
+    border-radius: 12px;
+    z-index: 20;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+button {
+    background-color: #8b5a2b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Lora', serif;
+    font-size: 16px;
+}
