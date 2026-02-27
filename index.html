@@ -3,22 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Room on the Roof: Focus</title>
+    <title>Room on the Roof: Focus Sanctuary</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="atmosphere-filter"></div>
 
-    <div class="game-container">
-        <div class="scrolling-path"></div>
+    <div id="day-container" class="game-container">
+        <div class="scrolling-path" id="forest-path"></div>
         
         <div class="rusty-character"></div>
         
-        <div class="ui-panel">
-            <h2 id="story-text">Walk with me. What are we focusing on?</h2>
-            <input type="text" id="task-input" placeholder="e.g., Read one chapter...">
+        <div class="ui-panel" id="focus-ui">
+            <h2 id="story-text">The world is loud, but up here, it's just the pines. What are we focusing on?</h2>
+            <input type="text" id="task-input" placeholder="e.g., Read one chapter, drink water...">
             <button id="start-walk">Begin Journey</button>
             <div id="timer-display"></div>
+            
+            <div id="bros-story" class="hidden">
+                <p id="bros-text"></p>
+                <button id="go-to-night">Wait for Nightfall</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="night-sanctuary" class="hidden">
+        <h2 class="sanctuary-title">The Midnight Bazaar</h2>
+        <div class="record-player">
+            <div class="record" id="vinyl-disc">
+                <div class="record-label">Ilaiyaraaja Inst.</div> 
+            </div>
+            <div class="tonearm" id="stylus"></div>
+        </div>
+        
+        <div id="story-event" class="hidden">
+            <p id="event-text">The bell above the door chimes softly over the rain. Meena steps in, looking tired, carrying a weight she won't speak of.</p>
+            <div class="choice-buttons">
+                <button onclick="makeChoice('listen')">Offer her the stool and let the music play.</button>
+                <button onclick="makeChoice('tea')">Quietly hand her your cup of cutting chai.</button>
+            </div>
+            <button id="reset-day" class="hidden" onclick="resetToDawn()">Wait for Dawn</button>
         </div>
     </div>
 
